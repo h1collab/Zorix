@@ -8,19 +8,32 @@ steps:
         apt-get install -y wget unzip
 
         mkdir -p /opt/android-sdk/cmdline-tools
+
         wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+
         unzip -q commandlinetools-linux-11076708_latest.zip -d /opt/android-sdk/cmdline-tools
-        mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
+
+        mv /opt/android-sdk/cmdline-tools/cmdline-tools \
+           /opt/android-sdk/cmdline-tools/latest
 
         export ANDROID_HOME=/opt/android-sdk
         export ANDROID_SDK_ROOT=/opt/android-sdk
-        export PATH=$$PATH:$$ANDROID_HOME/cmdline-tools/latest/bin:$$ANDROID_HOME/platform-tools
+
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+        export PATH=$PATH:$ANDROID_HOME/platform-tools
 
         yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+        sdkmanager \
+          "platform-tools" \
+          "platforms;android-35" \
+          "build-tools;35.0.0"
+
+        cd Jetchat
 
         chmod +x gradlew
-        ./gradlew :Jetchat:app:assembleDebug
+
+        ./gradlew :app:assembleDebug --stacktrace
 
 options:
   logging: CLOUD_LOGGING_ONLY
