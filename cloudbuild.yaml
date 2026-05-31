@@ -1,0 +1,28 @@
+steps:
+  - name: 'gradle:8.7-jdk17'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        apt-get update
+        apt-get install -y wget unzip
+
+        mkdir -p /opt/android-sdk/cmdline-tools
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        unzip -q commandlinetools-linux-11076708_latest.zip -d /opt/android-sdk/cmdline-tools
+        mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
+
+        export ANDROID_HOME=/opt/android-sdk
+        export ANDROID_SDK_ROOT=/opt/android-sdk
+        export PATH=$$PATH:$$ANDROID_HOME/cmdline-tools/latest/bin:$$ANDROID_HOME/platform-tools
+
+        yes | sdkmanager --licenses
+        sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+        chmod +x gradlew
+        ./gradlew :Jetchat:app:assembleDebug
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 3600s
